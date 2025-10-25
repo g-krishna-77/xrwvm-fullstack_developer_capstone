@@ -1,64 +1,160 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Best Cars Dealership - Home</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="static/style.css">
-  <link rel="stylesheet" href="static/bootstrap.min.css">
-<script>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="/static/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .navbar {
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .navbar h2 {
+      color: white;
+      margin: 0;
+      font-weight: bold;
+    }
+    .navbar-text {
+      display: flex;
+      align-items: center;
+    }
+    .loginlink {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+    .homepage_links {
+      color: white;
+      text-decoration: none;
+      font-size: 1.05em;
+      padding: 8px 12px;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+    }
+    .homepage_links:hover {
+      background-color: rgba(255,255,255,0.2);
+      text-decoration: none;
+    }
+    .card {
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    .card-image-placeholder {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px 12px 0 0;
+      color: white;
+      font-size: 3em;
+    }
+    .banner {
+      padding: 25px;
+      text-align: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 0 0 12px 12px;
+    }
+    .banner h5 {
+      margin: 0 0 15px 0;
+      font-size: 1.8em;
+      font-weight: bold;
+    }
+    .btn-custom {
+      background-color: #17a2b8;
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      font-size: 1.1em;
+      border-radius: 6px;
+      transition: background-color 0.3s;
+    }
+    .btn-custom:hover {
+      background-color: #138496;
+      color: white;
+      text-decoration: none;
+    }
+    .container-main {
+      display: flex;
+      flex-direction: column;
+      min-height: 70vh;
+      justify-content: center;
+      padding: 30px 0;
+    }
+  </style>
+  <script>
+    const logout = async (e) => {
+      sessionStorage.removeItem("username");
+      window.location.href = "/";
+    };
 
-const logout = async (e) => {
-//Include the code for logout here.
-};
+    let checkSession = () => {
+      let curr_user = sessionStorage.getItem("username");
 
-let checkSession = ()=>{
-  let curr_user = sessionStorage.getItem("username");
-
-  if (curr_user && curr_user !== "") {
-    document.getElementById("loginlogout").innerHTML = 
-    '<span class="homepage_links">' + curr_user +'</span>' +
-    '<a class="homepage_links" onclick="logout()" href="/">Logout</a>'
-  } else {
-    document.getElementById("loginlogout").innerHTML = 
-    '<a class="homepage_links" href="/login">Login</a>'+
-    '<a class="homepage_links"  href="/register">Register</a>'
-  }
- }
-</script>
+      if (curr_user && curr_user !== "") {
+        document.getElementById("loginlogout").innerHTML = 
+          '<span class="homepage_links" style="color: white;">' + curr_user + '</span>' +
+          '<a class="homepage_links" onclick="logout()" href="javascript:void(0);">Logout</a>';
+      } else {
+        document.getElementById("loginlogout").innerHTML = 
+          '<a class="homepage_links" href="/login">Login</a>' +
+          '<a class="homepage_links" href="/register">Register</a>';
+      }
+    };
+  </script>
 </head>
 <body onload="checkSession()">
-<nav class="navbar navbar-expand-lg navbar-light" style="background-color:darkturquoise; height: 1in;">
-  <div class="container-fluid">
-    <h2 style="padding-right: 5%;">Dealerships</h2>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarText">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" style="font-size: larger;" aria-current="page" href="#">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" style="font-size: larger;" href="/about">About Us</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" style="font-size: larger;" href="/contact">Contact Us</a>
-        </li>
-      </ul>
-      <span class="navbar-text">
-        <div class="loginlink" id="loginlogout">
-        </div>
+  <nav class="navbar navbar-expand-lg navbar-light" style="background-color: darkturquoise; padding: 15px 0;">
+    <div class="container-fluid">
+      <h2 style="padding-right: 5%; color: white; margin-bottom: 0;">Best Cars Dealership</h2>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" style="font-size: 1.2em; color: white;" aria-current="page" href="/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" style="font-size: 1.2em; color: white;" href="/about">About Us</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" style="font-size: 1.2em; color: white;" href="/contact">Contact Us</a>
+          </li>
+        </ul>
+        <span class="navbar-text">
+          <div class="loginlink" id="loginlogout"></div>
         </span>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container-main">
+    <div class="card" style="width: 60%; margin: auto; align-self: center;">
+      <div class="card-image-placeholder">🚗</div>
+      <div class="banner">
+        <h5>Welcome to Best Cars Dealership!</h5>
+        <p style="margin: 10px 0;">Discover premium vehicles at unbeatable prices</p>
+        <a href="/dealers" class="btn btn-custom">View Dealerships</a>
+      </div>
     </div>
   </div>
-</nav>
-<div style="display: flex;flex-direction: column;">
-<div class="card" style="width: 50%;margin-top: 50px;align-self: center;">
-  <img src="static/car_dealership.jpg" class="card-img-top" alt="...">
-  <div class="banner">
-    <h5>Welcome to our Dealerships!</h5>
-    <a href="/dealers" class="btn" style="background-color: aqua;margin:10px">View Dealerships</a>
-  </div>
-</div>
-</div>
+
+  <footer style="background-color: darkturquoise; color: white; text-align: center; padding: 20px; margin-top: 50px;">
+    <p>&copy; 2025 Best Cars Dealership. All rights reserved.</p>
+  </footer>
 </body>
 </html>
