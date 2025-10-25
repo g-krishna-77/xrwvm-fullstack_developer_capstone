@@ -36,6 +36,7 @@
       padding: 8px 12px;
       border-radius: 4px;
       transition: background-color 0.3s;
+      cursor: pointer;
     }
     .homepage_links:hover {
       background-color: rgba(255,255,255,0.2);
@@ -97,8 +98,21 @@
   </style>
   <script>
     const logout = async (e) => {
-      sessionStorage.removeItem("username");
-      window.location.href = "/";
+      let logout_url = window.location.origin+"/djangoapp/logout";
+      const res = await fetch(logout_url, {
+        method: "GET",
+      });
+      const json = await res.json();
+      if (json) {
+        let username = sessionStorage.getItem('username');
+        sessionStorage.removeItem('username');
+        alert("Logging out "+username+"...");
+        window.location.href = window.location.origin;
+        window.location.reload();
+      }
+      else {
+        alert("The user could not be logged out.")
+      }
     };
 
     let checkSession = () => {
