@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us - Best Cars Dealership</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="/static/bootstrap.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <style>
+    .navbar {
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .navbar h2 {
+      color: white;
+      margin: 0;
+      font-weight: bold;
+    }
+    .nav-link {
+      color: white !important;
+      font-size: 1.2em;
+      transition: opacity 0.3s;
+    }
+    .nav-link:hover {
+      opacity: 0.8;
+    }
+    .nav-link.active {
+      font-weight: bold;
+      border-bottom: 3px solid white;
+    }
+    .contact-header {
+      background: linear-gradient(135deg, darkturquoise 0%, #0d8f9f 100%);
+      color: white;
+      padding: 60px 20px;
+      text-align: center;
+      margin-bottom: 40px;
+      border-radius: 0 0 15px 15px;
+    }
+    .contact-header h1 {
+      font-size: 3em;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+    .contact-header p {
+      font-size: 1.2em;
+    }
+    .contact-container {
+      display: flex;
+      flex-direction: row;
+      gap: 40px;
+      width: 90%;
+      margin: 40px auto;
+      max-width: 1200px;
+    }
+    .contact-info {
+      flex: 1;
+      background-color: #f8f9fa;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .contact-form {
+      flex: 1;
+      background-color: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      border: 1px solid #ddd;
+    }
+    .contact-info h2, .contact-form h2 {
+      color: darkturquoise;
+      margin-bottom: 25px;
+      font-size: 2em;
+      font-weight: bold;
+    }
+    .contact-info p {
+      margin: 20px 0;
+      font-size: 1.1em;
+      line-height: 1.8;
+    }
+    .contact-info strong {
+      color: darkturquoise;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      font-weight: bold;
+      color: darkturquoise;
+      display: block;
+      margin-bottom: 8px;
+      font-size: 1.05em;
+    }
+    .form-group input, .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #ddd;
+      border-radius: 6px;
+      font-size: 1em;
+      font-family: Arial, sans-serif;
+      transition: border-color 0.3s;
+    }
+    .form-group input:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: darkturquoise;
+      box-shadow: 0 0 5px rgba(0, 128, 128, 0.3);
+    }
+    .form-group textarea {
+      resize: vertical;
+      min-height: 140px;
+    }
+    .submit-btn {
+      background-color: darkturquoise;
+      color: white;
+      padding: 14px 40px;
+      border: none;
+      border-radius: 6px;
+      font-size: 1.1em;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+    .submit-btn:hover {
+      background-color: #0d8f9f;
+      transform: translateY(-2px);
+    }
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+    footer {
+      background-color: darkturquoise;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      margin-top: 50px;
+    }
+    @media (max-width: 768px) {
+      .contact-container {
+        flex-direction: column;
+        width: 95%;
+      }
+    }
+  </style>
+  <script>
+    const logout = async (e) => {
+      sessionStorage.removeItem("username");
+      window.location.href = "/";
+    };
+
+    let checkSession = () => {
+      let curr_user = sessionStorage.getItem("username");
+      if (curr_user && curr_user !== "") {
+        document.getElementById("loginlogout").innerHTML = 
+          '<span style="color: white;">' + curr_user + '</span>' +
+          '<a style="color: white; text-decoration: none; cursor: pointer;" onclick="logout()">Logout</a>';
+      }
+    };
+  </script>
+</head>
+<body onload="checkSession()">
+  <nav class="navbar navbar-expand-lg navbar-light" style="background-color: darkturquoise; padding: 15px 0;">
+    <div class="container-fluid">
+      <h2 style="padding-right: 5%; color: white;">Best Cars Dealership</h2>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href="/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/about">About Us</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/contact">Contact Us</a>
+          </li>
+        </ul>
+        <span class="navbar-text">
+          <div id="loginlogout"></div>
+        </span>
+      </div>
+    </div>
+  </nav>
+
+  <div class="contact-header">
+    <h1>Contact Us</h1>
+    <p>We'd love to hear from you! Get in touch with us for any inquiries about our vehicles or services.</p>
+  </div>
+
+  <div class="contact-container">
+    <!-- Contact Information -->
+    <div class="contact-info">
+      <h2>📞 Contact Information</h2>
+      
+      <p>
+        <strong>📍 Address:</strong><br>
+        123 Auto Drive<br>
+        Detroit, MI 48201<br>
+        United States
+      </p>
+
+      <p>
+        <strong>☎️ Phone:</strong><br>
+        (313) 555-CARS (2277)<br>
+        Toll Free: 1-800-BEST-CARS
+      </p>
+
+      <p>
+        <strong>✉️ Email:</strong><br>
+        info@bestcars.com<br>
+        sales@bestcars.com
+      </p>
+
+      <p>
+        <strong>⏰ Business Hours:</strong><br>
+        Monday - Friday: 9:00 AM - 8:00 PM<br>
+        Saturday: 10:00 AM - 6:00 PM<br>
+        Sunday: 12:00 PM - 5:00 PM<br>
+        Holidays: Closed
+      </p>
+
+      <p>
+        <strong>🚗 Services We Offer:</strong><br>
+        • New and Used Vehicle Sales<br>
+        • Trade-In Evaluations<br>
+        • Financing & Leasing Options<br>
+        • Vehicle Maintenance & Service<br>
+        • Extended Warranties
+      </p>
+    </div>
+
+    <!-- Contact Form -->
+    <div class="contact-form">
+      <h2>✉️ Send Us a Message</h2>
+      <form method="POST" action="/contact/">
+        <div class="form-group">
+          <label for="name">Full Name *</label>
+          <input type="text" id="name" name="name" placeholder="John Doe" required>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email Address *</label>
+          <input type="email" id="email" name="email" placeholder="john@example.com" required>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <input type="tel" id="phone" name="phone" placeholder="(555) 123-4567">
+        </div>
+
+        <div class="form-group">
+          <label for="subject">Subject *</label>
+          <input type="text" id="subject" name="subject" placeholder="e.g., Vehicle Inquiry, Service Question" required>
+        </div>
+
+        <div class="form-group">
+          <label for="message">Message *</label>
+          <textarea id="message" name="message" placeholder="Tell us how we can help you..." required></textarea>
+        </div>
+
+        <button type="submit" class="submit-btn">Send Message</button>
+      </form>
+      <p style="margin-top: 15px; color: #666; font-size: 0.95em; text-align: center;">* Required fields</p>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Best Cars Dealership. All rights reserved.</p>
+  </footer>
+</body>
+</html>
