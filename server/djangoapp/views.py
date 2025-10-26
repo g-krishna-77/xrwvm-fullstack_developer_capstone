@@ -1,39 +1,37 @@
-# Uncomment the required imports before adding the code
-
-from django.shortcuts import render
-from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
-from django.contrib.auth.models import User
-from django.shortcuts import get_object_or_404, render, redirect
-from django.contrib.auth import logout, login, authenticate
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
+from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
-from datetime import datetime
+from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
-import logging
+from datetime import datetime
 import json
+import logging
+
+from .models import CarMake, CarModel
+from .populate import initiate
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
-# Create your views here.
+# --------------------- User Authentication ---------------------
 
-# Create a `login_request` view to handle sign in request
 @csrf_exempt
 def login_user(request):
-    # Get username and password from request.POST dictionary
     data = json.loads(request.body)
     username = data['userName']
     password = data['password']
-    # Try to check if provide credential can be authenticated
+
     user = authenticate(username=username, password=password)
     data = {"userName": username}
+
     if user is not None:
-        # If user is valid, call login method to login current user
         login(request, user)
         data = {"userName": username, "status": "Authenticated"}
+
     return JsonResponse(data)
 
 
-# Create a `logout_request` view to handle sign out request
 @csrf_exempt
 def logout_user(request):
     logout(request)
@@ -41,56 +39,72 @@ def logout_user(request):
     return JsonResponse(data)
 
 
-# Create a `registration` view to handle sign up request
 @csrf_exempt
 def registration(request):
-    context = {}
-    # Load JSON data from the request body
     data = json.loads(request.body)
     username = data['userName']
     password = data['password']
     first_name = data['firstName']
     last_name = data['lastName']
     email = data['email']
+
     username_exist = False
-    email_exist = False
+
     try:
-        # Check if user already exists
         User.objects.get(username=username)
         username_exist = True
     except:
-        # If not, simply log this is a new user
-        logger.debug("{} is new user".format(username))
-    
-    # If it is a new user
+        logger.debug(f"{username} is a new user")
+
     if not username_exist:
-        # Create user in auth_user table
-        user = User.objects.create_user(username=username, first_name=first_name, last_name=last_name, password=password, email=email)
-        # Login the user and redirect to list page
+        user = User.objects.create_user(username=username, password=password,
+                                        first_name=first_name, last_name=last_name, email=email)
         login(request, user)
-        data = {"userName": username, "status": "Authenticated"}
-        return JsonResponse(data)
+        return JsonResponse({"userName": username, "status": "Authenticated"})
     else:
-        data = {"userName": username, "error": "Already Registered"}
-        return JsonResponse(data)
+        return JsonResponse({"userName": username, "error": "Already Registered"})
 
 
-# Update the `get_dealerships` view to render the index page with
-# a list of dealerships
+# --------------------- Dealer Views (stubs for future) ---------------------
+
 def get_dealerships(request):
+    # Placeholder: Implementation completed in later labs
     pass
 
 
-# Create a `get_dealer_reviews` view to render the reviews of a dealer
 def get_dealer_reviews(request, dealer_id):
     pass
 
 
-# Create a `get_dealer_details` view to render the dealer details
 def get_dealer_details(request, dealer_id):
     pass
 
 
-# Create a `add_review` view to submit a review
 def add_review(request):
     pass
+
+
+# --------------------- Car Make & Model Views ---------------------
+
+def get_cars(request):
+    """
+    Returns all car models and their corresponding makes.
+    Populates database automatically the first time it's called if empty.
+    """
+    count = CarMake.objects.count()
+
+    if count == 0:
+        initiate()
+
+    car_models = CarModel.objects.select_related('car_make').all()
+    cars = []
+
+    for car_model in car_models:
+        cars.append({
+            "CarModel": car_model.name,
+            "CarMake": car_model.car_make.name,
+            "Type": car_model.type,
+            "Year": car_model.year
+        })
+
+    return JsonResponse({"CarModels": cars})
