@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, jsonify
 from nltk.sentiment import SentimentIntensityAnalyzer
 import nltk
 
@@ -17,7 +17,6 @@ def analyze_sentiment(text):
     """
     scores = sia.polarity_scores(text)
     compound = scores['compound']
-    
     if compound >= 0.05:
         sentiment = "positive"
     elif compound <= -0.05:
@@ -26,7 +25,6 @@ def analyze_sentiment(text):
         sentiment = "neutral"
     
     return jsonify({"sentiment": sentiment})
-
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

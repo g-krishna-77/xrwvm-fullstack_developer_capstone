@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import CarMake, CarModel
 
+
 # Inline admin to view car models under their make
 class CarModelInline(admin.StackedInline):
     model = CarModel
