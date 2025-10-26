@@ -32,13 +32,11 @@ def login_user(request):
 
     return JsonResponse(data)
 
-
 @csrf_exempt
 def logout_user(request):
     logout(request)
     data = {"userName": ""}
     return JsonResponse(data)
-
 
 @csrf_exempt
 def registration(request):
@@ -65,67 +63,93 @@ def registration(request):
     else:
         return JsonResponse({"userName": username, "error": "Already Registered"})
 
-
 # --------------------- Dealer Views ---------------------
 
 def get_dealerships(request, state="All"):
     """
     Fetch all dealerships or filter by state
     """
-    if state == "All":
-        endpoint = "/fetchDealers"
-    else:
-        endpoint = "/fetchDealers/" + state
-    
-    dealerships = get_request(endpoint)
-    return JsonResponse({"status": 200, "dealers": dealerships})
-
+    try:
+        if state == "All":
+            endpoint = "/fetchDealers"
+        else:
+            endpoint = "/fetchDealers/" + state
+        
+        dealerships = get_request(endpoint)
+        if dealerships is None:
+            dealerships = []
+        
+        return JsonResponse({"status": 200, "dealers": dealerships})
+    except Exception as err:
+        logger.error(f"Error in get_dealerships: {err}")
+        return JsonResponse({"status": 500, "message": "Error fetching dealerships"})
 
 def get_dealer_details(request, dealer_id):
     """
     Fetch details of a specific dealer by ID
     """
-    if dealer_id:
-        endpoint = "/fetchDealer/" + str(dealer_id)
-        dealership = get_request(endpoint)
-        return JsonResponse({"status": 200, "dealer": dealership})
-    else:
-        return JsonResponse({"status": 400, "message": "Bad Request"})
-
+    try:
+        if dealer_id:
+            endpoint = "/fetchDealer/" + str(dealer_id)
+            dealership = get_request(endpoint)
+            if dealership is None:
+                dealership = []
+            
+            return JsonResponse({"status": 200, "dealer": dealership})
+        else:
+            return JsonResponse({"status": 400, "message": "Bad Request"})
+    except Exception as err:
+        logger.error(f"Error in get_dealer_details: {err}")
+        return JsonResponse({"status": 500, "message": "Error fetching dealer details"})
 
 def get_dealer_reviews(request, dealer_id):
     """
     Fetch reviews for a dealer and analyze sentiment for each review
     """
-    if dealer_id:
-        endpoint = "/fetchReviews/dealer/" + str(dealer_id)
-        reviews = get_request(endpoint)
-        
-        for review_detail in reviews:
-            response = analyze_review_sentiments(review_detail['review'])
-            print(response)
-            review_detail['sentiment'] = response.get('sentiment', 'neutral')
-        
-        return JsonResponse({"status": 200, "reviews": reviews})
-    else:
-        return JsonResponse({"status": 400, "message": "Bad Request"})
-
+    try:
+        if dealer_id:
+            endpoint = "/fetchReviews/dealer/" + str(dealer_id)
+            reviews = get_request(endpoint)
+            
+            # Handle None response
+            if reviews is None:
+                reviews = []
+            
+            # Analyze sentiment for each review
+            for review_detail in reviews:
+                try:
+                    response = analyze_review_sentiments(review_detail.get('review', ''))
+                    print(response)
+                    review_detail['sentiment'] = response.get('sentiment', 'neutral') if response else 'neutral'
+                except Exception as err:
+                    logger.error(f"Error analyzing sentiment: {err}")
+                    review_detail['sentiment'] = 'neutral'
+            
+            return JsonResponse({"status": 200, "reviews": reviews})
+        else:
+            return JsonResponse({"status": 400, "message": "Bad Request"})
+    except Exception as err:
+        logger.error(f"Error in get_dealer_reviews: {err}")
+        return JsonResponse({"status": 500, "message": "Error fetching reviews"})
 
 @csrf_exempt
 def add_review(request):
     """
     Add a new review (authenticated users only)
     """
-    if not request.user.is_anonymous:
-        data = json.loads(request.body)
-        try:
+    try:
+        if not request.user.is_anonymous:
+            data = json.loads(request.body)
             response = post_review(data)
-            return JsonResponse({"status": 200})
-        except Exception as err:
-            return JsonResponse({"status": 401, "message": "Error in posting review"})
-    else:
-        return JsonResponse({"status": 403, "message": "Unauthorized"})
-
+            if response:
+                return JsonResponse({"status": 200})
+            else:
+                return JsonResponse({"status": 401, "message": "Error in posting review"})
+        else:
+            return JsonResponse({"status": 403, "message": "Unauthorized"})
+    except Exception as err:
+        logger.error(f"Error in add_review: {err}")
+        return JsonResponse({"status": 401, "message": "Error in posting review"})
 
 # --------------------- Car Make & Model Views ---------------------
 
@@ -134,20 +158,26 @@ def get_cars(request):
     Returns all car models and their corresponding makes.
     Populates database automatically the first time it's called if empty.
     """
-    count = CarMake.objects.count()
+    try:
+        count = CarMake.objects.count()
 
-    if count == 0:
-        initiate()
+        if count == 0:
+            initiate()
 
-    car_models = CarModel.objects.select_related('car_make').all()
-    cars = []
+        car_models = CarModel.objects.select_related('car_make').all()
+        cars = []
 
-    for car_model in car_models:
-        cars.append({
-            "CarModel": car_model.name,
-            "CarMake": car_model.car_make.name,
-            "Type": car_model.type,
-            "Year": car_model.year
-        })
+        for car_model in car_models:
+            cars.append({
+                "CarModel": car_model.name,
+                "CarMake": car_model.car_make.name,
+                "Type": car_model.type,
+                "Year": car_model.year
+            })
 
-    return JsonResponse({"CarModels": cars})
+        return JsonResponse({"CarModels": cars})
+    except Exception as err:
+        logger.error(f"Error in get_cars: {err}")
+        import traceback
+        traceback.print_exc()
+        return JsonResponse({"status": 500, "message": f"Error: {str(err)}"})
